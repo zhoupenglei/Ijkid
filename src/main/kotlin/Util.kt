@@ -9,7 +9,7 @@ inline fun <reified T> KAnnotatedElement.findAnnotation(): T? = annotations.filt
 
 internal fun <T : Any> KClass<T>.createInstance(): T {
     val noArgConstructor = constructors.find {
-        it.parameters.isNotEmpty()
+        it.parameters.isEmpty()
     }
     noArgConstructor ?: throw IllegalArgumentException("Class must have a no-argument constructor")
     return noArgConstructor.call()
