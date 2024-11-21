@@ -38,6 +38,10 @@ private fun StringBuilder.serializeProperty(prop: KProperty1<Any, *>, obj: Any) 
 }
 
 fun KProperty<*>.getSerializer(): ValueSerializer<Any?>? {
+    val dateFormatAnn = findAnnotation<DateFormat>()
+    if (dateFormatAnn != null) {
+        return DateSerializer(dateFormatAnn.format) as ValueSerializer<Any?>
+    }
     val customSerializerAnn = findAnnotation<CustomSerializer>() ?: return null
     val serializerClass = customSerializerAnn.serializerClass
     val valueSerializer = serializerClass.objectInstance ?: serializerClass.createInstance()

@@ -8,6 +8,9 @@ annotation class JsonExclude
 @Target(AnnotationTarget.PROPERTY)
 annotation class JsonName(val name: String)
 
+@Target(AnnotationTarget.PROPERTY)
+annotation class DateFormat(val format: String)
+
 interface ValueSerializer<T> {
     fun toJsonValue(value: T): Any?
     fun fromJsonValue(jsonValue: Any?): T

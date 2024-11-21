@@ -18,22 +18,14 @@ data class User(
     val age: Int,
     val address: Address,
     val leftAddress: List<Address>,
-    @CustomSerializer(DateSerializer::class) val birthDay: Date,
+    @DateFormat("yyyy-MM-dd") val birthDay: Date,
     val hobby: List<Int>,
     @DeserializeInterface(CompanyImpl::class) val company: Company
 )
 
 data class Address(val city: String)
 
-object DateSerializer : ValueSerializer<Date> {
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd")
 
-    override fun toJsonValue(value: Date): Any? =
-        dateFormat.format(value)
-
-    override fun fromJsonValue(jsonValue: Any?): Date =
-        dateFormat.parse(jsonValue as String)
-}
 
 private fun testSerialize() {
     val user = User(
