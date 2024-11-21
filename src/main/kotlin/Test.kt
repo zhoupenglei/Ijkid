@@ -1,11 +1,9 @@
 package ru.yole.jkid
 
 import ru.yole.jkid.deserialization.*
-import ru.yole.jkid.deserialization.CharReader
 import ru.yole.jkid.serialization.serialize
 import java.io.StringReader
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 interface Company {
     val name: String
@@ -20,7 +18,8 @@ data class User(
     val leftAddress: List<Address>,
     @DateFormat("yyyy-MM-dd") val birthDay: Date,
     val hobby: List<Int>,
-    @DeserializeInterface(CompanyImpl::class) val company: Company
+    @DeserializeInterface(CompanyImpl::class) val company: Company,
+    val bookPrice: Map<String, Double>
 )
 
 data class Address(val city: String)
@@ -34,7 +33,8 @@ private fun testSerialize() {
         leftAddress = listOf(Address(city = "洛阳")),
         birthDay = Date(),
         hobby = listOf(1, 2, 3),
-        company = CompanyImpl(name = "apk")
+        company = CompanyImpl(name = "apk"),
+        bookPrice = mapOf("Catch-22" to 10.92, "The Lord of the Rings" to 11.49)
     )
     val json = serialize(user)
     println(json)
@@ -87,7 +87,8 @@ private fun testDeserializer() {
         leftAddress = listOf(Address(city = "洛阳")),
         birthDay = Date(),
         hobby = listOf(1, 2, 3),
-        company = CompanyImpl(name = "apk")
+        company = CompanyImpl(name = "apk"),
+        bookPrice = mapOf("Catch-22" to 10.92, "The Lord of the Rings" to 11.49)
     )
     val json = serialize(user0)
     println(json)
@@ -114,5 +115,5 @@ private fun testMap() {
 }
 
 fun main() {
-    testMap()
+    testDeserializer()
 }
