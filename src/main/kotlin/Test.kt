@@ -1,20 +1,26 @@
 package ru.yole.jkid
 
+import ru.yole.jkid.deserialization.*
 import ru.yole.jkid.deserialization.CharReader
-import ru.yole.jkid.deserialization.ClassInfoCache
-import ru.yole.jkid.deserialization.Lexer
-import ru.yole.jkid.deserialization.MalformedJSONException
 import ru.yole.jkid.serialization.serialize
 import java.io.StringReader
 import java.text.SimpleDateFormat
 import java.util.Date
 
+interface Company {
+    val name: String
+}
+
+data class CompanyImpl(override val name: String) : Company
 
 data class User(
     val name: String,
     val age: Int,
     val address: Address,
-    @CustomSerializer(DateSerializer::class) val birthDay: Date
+    val leftAddress: List<Address>,
+    @CustomSerializer(DateSerializer::class) val birthDay: Date,
+    val hobby: List<Int>,
+    @DeserializeInterface(CompanyImpl::class) val company: Company
 )
 
 data class Address(val city: String)
@@ -30,7 +36,15 @@ object DateSerializer : ValueSerializer<Date> {
 }
 
 private fun testSerialize() {
-    val user = User("张三", 30, address = Address(city = "上海"), birthDay = Date())
+    val user = User(
+        "张三",
+        30,
+        address = Address(city = "上海"),
+        leftAddress = listOf(Address(city = "洛阳")),
+        birthDay = Date(),
+        hobby = listOf(1, 2, 3),
+        company = CompanyImpl(name = "apk")
+    )
     val json = serialize(user)
     println(json)
 }
@@ -73,6 +87,31 @@ private fun testClassInfoCache() {
 
 }
 
+private fun testDeserializer() {
+
+    val user0 = User(
+        "张三",
+        30,
+        address = Address(city = "上海"),
+        leftAddress = listOf(Address(city = "洛阳")),
+        birthDay = Date(),
+        hobby = listOf(1, 2, 3),
+        company = CompanyImpl(name = "apk")
+    )
+    val json = serialize(user0)
+    println(json)
+
+    val lexer = Lexer(StringReader(json))
+
+    while (true) {
+        val token = lexer.nextToken() ?: break
+        println(token)
+    }
+    println("")
+    val user = deserialize<User>(json)
+    println(user)
+}
+
 fun main() {
-    testClassInfoCache()
+    testDeserializer()
 }
