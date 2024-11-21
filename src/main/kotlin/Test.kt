@@ -26,7 +26,6 @@ data class User(
 data class Address(val city: String)
 
 
-
 private fun testSerialize() {
     val user = User(
         "张三",
@@ -104,6 +103,16 @@ private fun testDeserializer() {
     println(user)
 }
 
+data class BookStore(val bookPrice: Map<String, Double>)
+
+private fun testMap() {
+    val bookStore = BookStore(mapOf("Catch-22" to 10.92, "The Lord of the Rings" to 11.49))
+    val json = serialize(bookStore)
+    println(json)
+    val bookStoreD = deserialize<BookStore>(json)
+    println(bookStoreD)
+}
+
 fun main() {
-    testDeserializer()
+    testMap()
 }
